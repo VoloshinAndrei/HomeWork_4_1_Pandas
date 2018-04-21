@@ -26,6 +26,7 @@ class LinkedListNode:
     def __init__(self, data):
         self.data = data
         self.next = None  # type: LinkedListNode
+        self.temp = None  # type: LinkedListNode
 
 
 class LinkedList:
@@ -40,7 +41,6 @@ class LinkedList:
             self.head = self.head or current
             previous = current
 
-
     def __iter__(self):
         current = self.head
         while current:
@@ -49,15 +49,17 @@ class LinkedList:
 
     def reverse(self):
         current = self.head
-        temp_list = []
         while current:
-            temp_list.append(current.data)
+            temp = current
             current = current.next
+            if current:
+                current.temp = temp
+            else:
+                self.head = temp
 
-        temp_list.reverse()
         current = self.head
-        for i in temp_list:
-            current.data = i
+        while current:
+            current.next = current.temp
             current = current.next
 
 
@@ -76,13 +78,10 @@ class LinkedListTestCase(unittest.TestCase):
             double=dict(
                 items=[1, 2],
                 expected_items=[2, 1],
-                # expected_items=[1, 2],
             ),
             triple=dict(
                 items=[1, 2, 3],
                 expected_items=[3, 2, 1],
-                # expected_items=[1, 2, 3],
-
             ),
         )
         for case, data in cases.items():
@@ -93,4 +92,3 @@ class LinkedListTestCase(unittest.TestCase):
                     data['expected_items'],
                     list(linked_list),
                 )
-
